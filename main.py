@@ -23,6 +23,7 @@ if __name__ == "__main__":
         "safebrowsing.enabled": False
     })
     opts.add_argument('--disable-gpu')
+    opts.add_argument('--headless')
     opts.add_argument('--disable-software-rasterizer')
 
     scroll = int(input('Enter scroll times: '))
@@ -48,11 +49,19 @@ if __name__ == "__main__":
             browser = Chrome(options=opts)
             cate = sp.display_categories(browser)
             href = cate.get_attribute('href')
-            result_folder = "./images-" + cate.text + \
-                "/" if len(cate.text) > 1 else "./images/"
+            result_folder = "/images-" + cate.text + \
+                "/" if len(cate.text) > 1 else "/images/"
             browser.quit()
-            prefs = {"download.default_directory": os.getcwd() + result_folder}
-            opts.add_experimental_option("prefs", prefs)
+            #prefs = {"download.default_directory": os.getcwd() + result_folder}
+            opts.add_experimental_option("prefs", {
+                "download.default_directory": os.getcwd() + result_folder,
+                "savefile.default_directory": os.getcwd() + result_folder,
+                "download.prompt_for_download": False,
+                "download.directory_upgrade": True,
+                "safebrowsing_for_trusted_sources_enabled": False,
+                "safebrowsing.enabled": False
+            })
+            #opts.add_experimental_option("prefs", prefs)
             browser = Chrome(options=opts)
             sp.extract_and_save_imgs(browser, href, scroll, result_folder)
             want_continue = input('Want more ?(Y/n): ')

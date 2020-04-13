@@ -55,6 +55,7 @@ def extract_data(browser, url, scroll, css_selector):
 
 
 def extract_and_save_imgs(browser, img_url, scroll, result_folder):
+    print("reading page: ", img_url)
     # Save img
     # Make folder
     pathlib.Path(result_folder).mkdir(parents=True, exist_ok=True)
@@ -65,9 +66,12 @@ def extract_and_save_imgs(browser, img_url, scroll, result_folder):
         img_id = img.get_attribute('href').split('/')[-1]
         src.append('https://unsplash.com/photos/' +
                    img_id + '/download?force=true')
+    print("try first image: ", src[0])
     browser.get(src[0])
     for url in src[1:]:
-        browser.execute_script('window.open("{}", "_blank");'.format(url))
+        print("downloading image: ", url)
+        #browser.execute_script('window.open("{}", "_blank");'.format(url))
+        browser.get(url)
 
 
 def extract_href_and_name(browser, scroll):
@@ -102,7 +106,7 @@ def load_more(browser):
 def display_categories(browser):
     browser.get('https://unsplash.com/')
     categories = browser.find_elements_by_xpath(
-        "//a[@class='SI2Kz _1CBrG xLon9']")
+        "//a[@class='qvEaq _1CBrG']")
     for i in range(1, len(categories)):
         print('%d. %s' % (i, categories[i-1].text))
     while True:
